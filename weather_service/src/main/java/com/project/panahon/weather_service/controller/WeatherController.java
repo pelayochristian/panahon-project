@@ -23,10 +23,16 @@ public class WeatherController {
         this.weatherService = weatherService;
     }
 
+    /**
+     * REST - END point for exposing <tt>https://openweathermap.org/api</tt>. data.
+     *
+     * @param latitude  {@link String}
+     * @param longitude {@link String}
+     * @return {@link Map}
+     */
     @GetMapping(path = "/open-weather", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Object>> obtainOpenWeather
-            (@RequestParam String latitude,
-             @RequestParam String longitude) {
+    public ResponseEntity<Map<String, Object>> obtainOpenWeather(@RequestParam String latitude,
+                                                                 @RequestParam String longitude) {
         return new ResponseEntity<>(weatherService.openWeather(latitude, longitude), HttpStatus.OK);
     }
 }
