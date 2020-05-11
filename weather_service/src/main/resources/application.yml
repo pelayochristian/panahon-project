@@ -1,0 +1,22 @@
+# SERVER PORT
+server:
+  port: 8082
+
+# SPRING CONFIGURATION
+spring:
+  redis:                    # REDIS CONFIG
+    host: localhost         # REDIS PORT
+    port: 6379              # REDIS PORT
+  application:
+    name: WEATHER-SERVICE   # SERVICE NAME
+
+# EUREKA CONFIGURATION
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry:  true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+  instance:
+    hostname: localhost

@@ -1,0 +1,55 @@
+# SERVER PORT
+server:
+  port: 8080
+
+# EUREKA CONFIGURATION
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+  instance:
+    hostname: localhost
+
+# SPRING CONFIGURATION
+spring:
+  application:
+    name: API-GATEWAY-SERVICE
+  cloud:                                        # GATEWAY CONFIGURATION
+    gateway:
+
+      # Add routing configuration. Register every services for this project.
+      # This will serve as a API gateway of the incoming request.
+      routes:
+        - id: weather-service                   # WEATHER SERVICE ROUTES
+          uri: lb://WEATHER-SERVICE             # URI LOAD BALANCER FOR SERVICE
+
+          # NOTE: Be careful in configuring the {Path}, First letter should be
+          # Capital.
+          predicates:
+            - Path=/weather/**                  # ENTRY POINT FOR WEATHER SERVICE
+
+          # Add filter configuration for handling the fallback response if there's
+          # something happen to WEATHER-SERVICE.
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: weather-service
+                fallbackuri: forward:/weatherFallback
+
+# CONFIGURE HYSTRIX STREAM
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+
+hystrix:
+  command:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 500
