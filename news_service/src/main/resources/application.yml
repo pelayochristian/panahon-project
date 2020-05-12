@@ -1,5 +1,21 @@
+# NEWS_API CONFIGURATION
+api:
+  news-api:
+    uri: http://newsapi.org/v2/top-headlines?country=%s&apiKey=%s
+    token: 5003cc84786d46838137513086f998cc
+
+
 # SERVER PORT
 server:
   port: 8084
 
-
+# REDIS CONFIG
+redis:
+  expire:
+    duration: 24
+spring:
+  redis:
+    port: 6379
+    host: localhost
+  application:
+    name: NEWS-SERVICE

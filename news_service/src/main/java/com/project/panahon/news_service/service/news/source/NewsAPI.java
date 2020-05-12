@@ -3,6 +3,7 @@ package com.project.panahon.news_service.service.news.source;
 import com.project.panahon.news_service.service.news.factory.News;
 import org.springframework.http.ResponseEntity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,6 +24,11 @@ public class NewsAPI extends News {
      */
     @Override
     public Map<String, Object> parseNewsData(ResponseEntity<Object> newsResponse) {
+        Map<String, Object> parentMap = new HashMap<>();
+
+        Map<String, Object> childMap = new HashMap<>();
+
+        System.out.println(newsResponse);
         return null;
     }
 }

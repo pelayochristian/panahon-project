@@ -6,6 +6,7 @@ import com.project.panahon.news_service.service.news.factory.NewsFactory;
 import com.project.panahon.news_service.service.news.factory.NewsSourceType;
 import com.project.panahon.news_service.service.news.source.NewsAPI;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +29,12 @@ public class NewsServiceImplementation implements NewsService {
 
     private int newsAPiCounter = 1;
 
+    @Value("${api.news-api.uri}")
+    private String newsAPIURL;
+
+    @Value("${api.news-api.token}")
+    private String newsAPIToken;
+
     @Autowired
     public NewsServiceImplementation(RedisCacheManager redisCacheManager) {
         this.redisCacheManager = redisCacheManager;
@@ -42,6 +49,7 @@ public class NewsServiceImplementation implements NewsService {
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, Object> newsAPI(String country) {
+
         // Get the cache
         Map<String, Object> cache = redisCacheManager.obtainCache(country, NewsAPI.class.getSimpleName(), Map.class);
 
@@ -57,9 +65,10 @@ public class NewsServiceImplementation implements NewsService {
         newsAPiCounter++;
 
         // Response holder
-        Map<String, Object> jsonReponse = new HashMap<>();
+        Map<String, Object> jsonResponse = new HashMap<>();
 
         // Construct URL for retrieving from API
+        String url = String.format(newsAPIURL, newsAPIToken);
 
         // Use Rest-Template to get the response
         RestTemplate restTemplate = new RestTemplate();
@@ -67,16 +76,16 @@ public class NewsServiceImplementation implements NewsService {
         try {
 
             // Get the Response entity via rest-template.
-            ResponseEntity<Object> responseEntity = restTemplate.getForEntity("", Object.class);
+            ResponseEntity<Object> responseEntity = restTemplate.getForEntity(url, Object.class);
 
             // Get the instance for NEWS_API.
             News news = NewsFactory.getNewsDataParser(NewsSourceType.NEWS_API);
 
             // Get the filtered data.
-            jsonReponse = news.parseNewsData(responseEntity);
+            jsonResponse = news.parseNewsData(responseEntity);
 
             // Add to cache
-            cacheManager.putCache(country, NewsAPI.class.getSimpleName(), jsonReponse);
+            cacheManager.putCache(country, NewsAPI.class.getSimpleName(), jsonResponse);
 
             // Set expiration
             cacheManager.obtainExpire(country);
@@ -85,10 +94,10 @@ public class NewsServiceImplementation implements NewsService {
                 case 2:
                     break;
                 default:
-                    jsonReponse.put(NewsAPI.class.getSimpleName(), e.toString());
+                    jsonResponse.put(NewsAPI.class.getSimpleName(), e.toString());
                     break;
             }
         }
-        return jsonReponse;
+        return jsonResponse;
     }
 }
