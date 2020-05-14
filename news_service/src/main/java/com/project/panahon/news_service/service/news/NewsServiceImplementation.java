@@ -68,7 +68,7 @@ public class NewsServiceImplementation implements NewsService {
         Map<String, Object> jsonResponse = new HashMap<>();
 
         // Construct URL for retrieving from API
-        String url = String.format(newsAPIURL, newsAPIToken);
+        String url = String.format(newsAPIURL, country, newsAPIToken);
 
         // Use Rest-Template to get the response
         RestTemplate restTemplate = new RestTemplate();

@@ -3,8 +3,7 @@ package com.project.panahon.news_service.service.news.source;
 import com.project.panahon.news_service.service.news.factory.News;
 import org.springframework.http.ResponseEntity;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This abstract class extends {@link News}. This <br>
@@ -22,13 +21,18 @@ public class NewsAPI extends News {
      * @param newsResponse {@link ResponseEntity}
      * @return {@link Map}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Map<String, Object> parseNewsData(ResponseEntity<Object> newsResponse) {
-        Map<String, Object> parentMap = new HashMap<>();
+        Map<String, Object> newsMap = new HashMap<>();
 
-        Map<String, Object> childMap = new HashMap<>();
+        // Get the list list of articles from the news response.
+        List<LinkedHashMap<String, Object>> bodyListResponse = (List<LinkedHashMap<String, Object>>)
+                ((LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, Object>>>)
+                        Objects.requireNonNull(newsResponse.getBody())).get("articles");
 
-        System.out.println(newsResponse);
-        return null;
+        newsMap.put(this.getClass().getSimpleName(), bodyListResponse);
+
+        return newsMap;
     }
 }
