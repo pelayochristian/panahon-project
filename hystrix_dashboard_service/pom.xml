@@ -51,6 +51,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>hystrix_dashboard_service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
